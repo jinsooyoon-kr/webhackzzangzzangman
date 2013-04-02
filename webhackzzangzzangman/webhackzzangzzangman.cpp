@@ -225,8 +225,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 		hUrlbar = CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 10, 10, 900, 25, hWnd, (HMENU)100, hInst, NULL);
-		//ShowWindow(hUrlbar, SW_HIDE);
-
+		ShowWindow(hUrlbar, SW_HIDE);
 		break;
 	case WM_MOUSEMOVE:
 		{
@@ -236,6 +235,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					ShowWindow(hUrlbar, SW_SHOW);
 			else
 					ShowWindow(hUrlbar, SW_HIDE);
+			InvalidateRect(hWnd, NULL, FALSE);
 
 		}
 		break;
