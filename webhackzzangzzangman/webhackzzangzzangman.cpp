@@ -47,6 +47,7 @@ void Init(HWND hWnd){
 		MessageBox(0,L"FAILED TO setUIDelegate!",L"ERROR",MB_OK);
 	}
 	tab.m_mainWebView->setPolicyDelegate(tab.tabpolicy);
+	tab.m_mainWebView->setFrameLoadDelegate(tab.framedelegate);
 	RECT rect;
 	
 	GetClientRect(hwnd,&rect);
@@ -63,24 +64,30 @@ void Init(HWND hWnd){
 
 	}
 
-	BSTR str = SysAllocString(L"http://www.newheart.kr");
+	BSTR str = SysAllocString(L"http://newheart.kr");//localhost/php/webkittest.php");
 	IWebMutableURLRequest* req = 0;
 	if(FAILED(WebKitCreateInstance(CLSID_WebMutableURLRequest,0,IID_IWebMutableURLRequest,reinterpret_cast<void**>(&req))))
 	{
 		MessageBox(0,L"ERROR!",L"ERROR",MB_OK);
 	}
 	    BSTR httpMethodBSTR;
+
+		IPropertyBag* prop;
+
+		if(FAILED(req->allHTTPHeaderFields(&prop))){
+		MessageBox(0,L"PROPERTY ERROR!",L"ERROR",MB_OK);
+
+		}
     if (FAILED(req->HTTPMethod(&httpMethodBSTR)))
         return;
 	req->initWithURL(str,WebURLRequestUseProtocolCachePolicy,60);
-	IWebDataSource* src;
-	tab.m_mainWebFrame->dataSource(&src);
-	IWebArchive* arc;
 	
+		req->allHTTPHeaderFields(&prop);
 	
+		BSTR user_agent = SysAllocString(L"asd");
+		req->valueForHTTPHeaderField(SysAllocString(L"User-Agent"), &user_agent);
+		
 	
-	
-
 
 	
 	tab.m_mainWebFrame->loadRequest(req);
@@ -90,12 +97,12 @@ void Init(HWND hWnd){
 		req->Release();
 
 }
-void OnConnection(){
+void OnConnection(int tabindex){
 	httpVector.push_back(new HTTPConnection());//sorting with time seq
 	//커넥션 오면
 	int seq = 1;
 	std::for_each(httpVector.begin(), httpVector.end(), [&seq](HTTPConnection* t){t->sequence = seq++;});
-
+	//tabObject로 옮겨야 함
 }
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -226,6 +233,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		hUrlbar = CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 10, 10, 900, 25, hWnd, (HMENU)100, hInst, NULL);
 		ShowWindow(hUrlbar, SW_HIDE);
+		
 		break;
 	case WM_MOUSEMOVE:
 		{
@@ -236,7 +244,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			else
 					ShowWindow(hUrlbar, SW_HIDE);
 			InvalidateRect(hWnd, NULL, FALSE);
-
+		
 		}
 		break;
 	case WM_COMMAND:

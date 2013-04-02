@@ -18,6 +18,100 @@ public:
 	 }
 
 };
+
+class WebFrameLoad : public IWebFrameLoadDelegate{
+public:
+HRESULT STDMETHODCALLTYPE didStartProvisionalLoadForFrame( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebFrame *frame){
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didReceiveServerRedirectForProvisionalLoadForFrame( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebFrame *frame){
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didFailProvisionalLoadWithError( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebError *error,
+            /* [in] */ IWebFrame *frame) {
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didCommitLoadForFrame( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebFrame *frame){
+				return E_NOTIMPL;
+		}
+HRESULT STDMETHODCALLTYPE didReceiveTitle( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ BSTR title,
+            /* [in] */ IWebFrame *frame){
+
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didReceiveIcon( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ OLE_HANDLE hBitmap,
+            /* [in] */ IWebFrame *frame){
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didFinishLoadForFrame( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebFrame *frame){
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didFailLoadWithError( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebError *error,
+            /* [in] */ IWebFrame *forFrame){
+				
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didChangeLocationWithinPageForFrame( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebFrame *frame){
+				IWebURLRequest* req;
+				frame->loadRequest(req);
+				BSTR url;
+				req->URL(&url);
+				MessageBox(NULL,url,L"CHANGE LOCATION", MB_OK);
+				return E_NOTIMPL;
+		}
+HRESULT STDMETHODCALLTYPE willPerformClientRedirectToURL( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ BSTR url,
+            /* [in] */ double delaySeconds,
+            /* [in] */ DATE fireDate,
+            /* [in] */ IWebFrame *frame){
+				MessageBox(NULL,url,L"REDIRECTION", MB_OK);
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didCancelClientRedirectForFrame( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebFrame *frame){
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE willCloseFrame( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ IWebFrame *frame){
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE windowScriptObjectAvailable( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ JSContextRef context,
+            /* [in] */ JSObjectRef windowScriptObject){
+				return E_NOTIMPL;
+}
+HRESULT STDMETHODCALLTYPE didClearWindowObject( 
+            /* [in] */ IWebView *webView,
+            /* [in] */ JSContextRef context,
+            /* [in] */ JSObjectRef windowScriptObject,
+            /* [in] */ IWebFrame *frame){
+				return E_NOTIMPL;
+}
+private:
+
+};
 class tabUI : public IWebUIDelegate{
 public:
     virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject);
@@ -97,6 +191,7 @@ public:
 
 class tabObject{
 public:
+	WebFrameLoad* framedelegate;
 	IWebView* m_mainWebView;
 	tabUI* tabui;	
 	tabPolicy* tabpolicy;
